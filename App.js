@@ -2,10 +2,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
-import HomeScreen from './components/HomeScreen'
-import ImportScreen from './components/ImportScreen'
-import TransferFund from './components/TransferFund'
-import SuccessScreen from './components/Success'
+import HomeScreen from './src/components/HomeScreen'
+import ImportScreen from './src/components/HomeScreen'
+import TransferFund from './src/components/HomeScreen'
+import SuccessScreen from './src/components/HomeScreen'
 
 const Stack = createStackNavigator()
 
