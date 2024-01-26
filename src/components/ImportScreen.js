@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+// import bitcoinWallets from '../store/BitcoinWallets';
 
 const ImportScreen = ({navigation}) => {
   const [wallet, setWallet] = useState('');
@@ -8,6 +9,9 @@ const ImportScreen = ({navigation}) => {
   const handleImport = () => {
     // Logic for importing wallet and private key
     console.log('Import button pressed');
+    console.log(`Wallet: ${wallet}, Private Key: ${privateKey}`);
+    // bitcoinWallets.addBitcoinWallet(wallet, privateKey)
+    // navigation.goBack()
   };
 
   const handleCancel = () => {

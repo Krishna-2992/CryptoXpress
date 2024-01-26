@@ -5,6 +5,7 @@ const TopIndicator = () => {
 
 
   const [chain, setChain] = useState('Bitcoin');
+  
   return (
     <View style={styles.container}>
       <Text style={styles.indicatorText} onPress={()=>{setChain('Bitcoin')}}>Bitcoin</Text>
@@ -21,6 +22,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     elevation: 2,
+    marginTop:50
   },
   indicatorText: {
     fontSize: 16,
