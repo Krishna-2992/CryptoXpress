@@ -3,10 +3,9 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 import HomeScreen from './components/HomeScreen';
-import ImportScreen from './components/ImportScreen';
-import TransferFund from './components/TransferFund';
-import SuccessScreen from './components/Success';
-import History from './components/History'
+import ImportScreen from './components/HomeScreen';
+import TransferFund from './components/HomeScreen';
+import SuccessScreen from './components/HomeScreen';
 
 const Stack = createStackNavigator() ;
 
@@ -18,7 +17,6 @@ const App = () => {
        <Stack.Screen name = "ImportScreen" component = {ImportScreen} options={{headerShown: false}}/>
        <Stack.Screen name = "TransferFund" component = {TransferFund} options={{headerShown: false}}/>
        <Stack.Screen name = "Success" component = {SuccessScreen} options={{headerShown: false}}/>
-       <Stack.Screen name = "History" component = {History} options={{headerShown: false}}/>
 
     </Stack.Navigator>
     </NavigationContainer>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import TopIndicator from '../page/notch';
+import TopIndicator from '../page/notch'
 
 const TransferFund = ({navigation}) => {
   const [receiverAddress, setReceiverAddress] = useState('');

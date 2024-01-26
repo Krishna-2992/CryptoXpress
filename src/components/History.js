@@ -5,10 +5,6 @@ const History = () => {
   return (
     <View>
       <Text>History</Text>
-      <Text>History</Text>
-      <Text>History</Text>
-      <Text>History</Text>
-      <Text>History</Text>
     </View>
   )
 }
