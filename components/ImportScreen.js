@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { View, TextInput, Button, StyleSheet } from 'react-native'
 import bitcoinWallets from '../store/BitcoinWallets'
-
+import currentChain from '../store/CurrentChain'
+// import { Bitcoin_calculatePublicKey } from '../utils/BitcoinFunctions'
 const ImportScreen = ({ navigation }) => {
     const [walletName, setWalletName] = useState('')
     const [privateKey, setPrivateKey] = useState('')
@@ -12,14 +13,23 @@ const ImportScreen = ({ navigation }) => {
         } else return false
     }
 
-    const handleImport = () => {
-        // Logic for importing walletName and private key
-        console.log('Import button pressed')
-        if(!checkPrivateKey(privateKey)){
-          console.log('invalid private key')
-          return
+    function calculatePublicKey(privateKey) {
+        if (currentChain.chain === 'Bitcoin') {
+            // return Bitcoin_calculatePublicKey(privateKey)
+        } else if (currentChain.chain === 'Polygon') {
+            return 'polygon public key here'
+            // return Polygon_calculatePublicKey(privateKey)
         }
-        bitcoinWallets.addBitcoinWallet(walletName, privateKey)
+    }
+
+    const handleImport = () => {
+        console.log('Import button pressed')
+        // const account = calculatePublicKey(privateKey)
+        if (!checkPrivateKey(privateKey)) {
+          alert('Invalid private key');
+          return;
+        }
+        bitcoinWallets.addBitcoinWallet(walletName, privateKey, account)
         console.log('Wallet added successfully')
         console.log(bitcoinWallets.wallets)
         navigation.goBack()

@@ -2,22 +2,30 @@ import React, { useState, useEffect } from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 //  import { useHistory } from 'react-router-dom';
-import TopIndicator from '../page/notch'
+import TopIndicator from '../utils/notch'
 import bitcoinWallets from '../store/BitcoinWallets'
 import { useIsFocused } from '@react-navigation/native'
-import { flow } from 'mobx'
 
 const HomeScreen = ({ navigation }) => {
     const [wallets, setWallets] = useState([])
     const isFocused = useIsFocused()
     useEffect(() => {
         setWallets(bitcoinWallets.wallets)
-        console.log('inside useEffect, ', wallets)
     }, [isFocused])
 
     const handleWalletClick = (wallet) => {
-        // Logic to redirect to show history page of the selected wallet
-        navigation.navigate('Hisory')
+        // make the specific wallet active and navigate
+
+        const account = getAccountAddress(wallet.privateKey)
+        activeWallet.changeCurrentActiveAccount(
+            wallet.chain,
+            wallet.wallet,
+            wallet.account,
+            wallet.privateKey
+        )
+
+        // navigate to the Wallet screen
+        navigation.navigate('Wallet')
     }
 
     return (
@@ -32,10 +40,6 @@ const HomeScreen = ({ navigation }) => {
                         console.log('Import clicked')
                     }}
                 />
-                <Button
-                    title='Transfer Fund'
-                    onPress={() => navigation.navigate('TransferFund')}
-                />
             </View>
 
             {/* Horizontal Line */}
@@ -46,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
                 {wallets.map((wallet, index) => (
                     <TouchableOpacity
                         key={index}
-                        onPress={() => navigation.navigate('History')}
+                        onPress={handleWalletClick(wallet)}
                         style={styles.walletItem}
                     >
                         <Text>{wallet.wallet}</Text>
@@ -98,7 +102,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 30  ,
+        elevation: 30,
         backgroundColor: '#fff',
         borderRadius: 5,
     },

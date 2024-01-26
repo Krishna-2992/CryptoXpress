@@ -6,7 +6,7 @@ import HomeScreen from './components/HomeScreen';
 import ImportScreen from './components/ImportScreen';
 import TransferFund from './components/TransferFund';
 import SuccessScreen from './components/Success';
-import History from './components/History'
+import Wallet from './components/Wallet'
 
 const Stack = createStackNavigator() ;
 
@@ -18,7 +18,7 @@ const App = () => {
        <Stack.Screen name = "ImportScreen" component = {ImportScreen} options={{headerShown: false}}/>
        <Stack.Screen name = "TransferFund" component = {TransferFund} options={{headerShown: false}}/>
        <Stack.Screen name = "Success" component = {SuccessScreen} options={{headerShown: false}}/>
-       <Stack.Screen name = "History" component = {History} options={{headerShown: false}}/>
+       <Stack.Screen name = "Wallet" component = {Wallet} options={{headerShown: false}}/>
 
     </Stack.Navigator>
     </NavigationContainer>
