@@ -23,6 +23,10 @@ const History = ({ navigation }) => {
                     title='Transfer Fund'
                     onPress={() => navigation.navigate('TransferFund')}
                 />
+                <Button
+                    title='Back'
+                    onPress={() => navigation.navigate('Home')}
+                />
             </Text>
         </View>
     )

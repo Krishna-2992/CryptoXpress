@@ -3,28 +3,45 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 //  import { useHistory } from 'react-router-dom';
 import TopIndicator from '../utils/notch'
+
 import bitcoinWallets from '../store/BitcoinWallets'
+import polygonWallets from '../store/PolygonWallets'
+import activeWallet from '../store/ActiveWallet'
+import currentChain from '../store/CurrentChain'
+
 import { useIsFocused } from '@react-navigation/native'
+import Polygon from '../utils/PolygonFunctions'
 
 const HomeScreen = ({ navigation }) => {
     const [wallets, setWallets] = useState([])
     const isFocused = useIsFocused()
+
     useEffect(() => {
-        setWallets(bitcoinWallets.wallets)
+        if (currentChain.chain === 'Bitcoin') {
+            setWallets(bitcoinWallets.wallets)
+        } else if (currentChain.chain === 'Polygon') {
+            setWallets(polygonWallets.wallets)
+        }
     }, [isFocused])
 
-    const handleWalletClick = (wallet) => {
-        // make the specific wallet active and navigate
+    function calculatePublicKey(privateKey) {
+        if (currentChain.chain === 'Bitcoin') {
+            // return Bitcoin_calculatePublicKey(privateKey)
+            console.log('implementation for bitcoin not yet added')
+        } else if (currentChain.chain === 'Polygon') {
+            console.log(Polygon.calculatePublicKey)
+            return Polygon.calculatePublicKey(privateKey)
+        }
+    }
 
-        const account = getAccountAddress(wallet.privateKey)
+    const handleWalletClick = (wallet) => {
+        const account = calculatePublicKey(wallet.privateKey)
         activeWallet.changeCurrentActiveAccount(
-            wallet.chain,
+            activeWallet.chain,
             wallet.wallet,
-            wallet.account,
+            account,
             wallet.privateKey
         )
-
-        // navigate to the Wallet screen
         navigation.navigate('Wallet')
     }
 
@@ -41,8 +58,7 @@ const HomeScreen = ({ navigation }) => {
                     }}
                 />
             </View>
-
-            {/* Horizontal Line */}
+            
             <View style={styles.horizontalLine}></View>
 
             {/* users from ImportScreen */}
@@ -50,11 +66,13 @@ const HomeScreen = ({ navigation }) => {
                 {wallets.map((wallet, index) => (
                     <TouchableOpacity
                         key={index}
-                        onPress={handleWalletClick(wallet)}
+                        onPress={() => {
+                            handleWalletClick(wallet)
+                        }}
                         style={styles.walletItem}
                     >
                         <Text>{wallet.wallet}</Text>
-                        <Text>{wallet.privateKey}</Text>
+                        <Text>{wallet.account}</Text>
                     </TouchableOpacity>
                 ))}
             </View>

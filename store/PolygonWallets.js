@@ -1,26 +1,26 @@
 import { makeObservable, observable, action } from 'mobx'
 
-class BitcoinWallets {
+class PolygonWallets {
     wallets = []
     constructor() {
         makeObservable(
             this,
             {
                 wallets: observable,
-                addBitcoinWallet: action,
-                deleteBitcoinWallet: action,
+                addPolygonWallet: true,
+                deletePolygonWallet: true,
             },
             { autoBind: true }
         )
     }
 
     // public key is also to be added here.
-    addBitcoinWallet(wallet, privateKey, account) {
+    addPolygonWallet(wallet, privateKey, account) {
         this.wallets.push({ wallet, privateKey, account })
     }
-    deleteBitcoinWallet(wallet) {
+    deletePolygonWallet(wallet) {
         this.wallets = this.wallets.filter((w) => w.wallet !== wallet)
     }
 }
 
-export default bitcoinWallets = new BitcoinWallets()
+export default polygonWallets = new PolygonWallets()
