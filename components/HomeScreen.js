@@ -20,9 +20,7 @@ const HomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         if (currentChain.chain === 'Bitcoin') {
-            console.log('chain is bitcoin')
             setWallets(bitcoinWallets.wallets)
-            console.log('waelets is', wallets)
         } else if (currentChain.chain === 'Polygon') {
             setWallets(polygonWallets.wallets)
         }
@@ -34,32 +32,20 @@ const HomeScreen = ({ navigation }) => {
         console.log('currentChain', chain)
     }
 
-    function calculatePublicKey(privateKey) {
-        if (currentChain.chain === 'Bitcoin') {
-            // return Bitcoin_calculatePublicKey(privateKey)
-            console.log('implementation for bitcoin not yet added')
-        } else if (currentChain.chain === 'Polygon') {
-            console.log(Polygon.calculatePublicKey)
-            return Polygon.calculatePublicKey(privateKey)
-        }
+    function trimWalletAddress(account) {
+        console.log('account', account)
+        return account.slice(0, 6) + '...' + account.slice(-4)
     }
-
-    async function checkBackend() {
-        console.log('localhost called')
-        const response = await axios.get('https://localhost:3000')
-        console.log('ressss', response)
-    }
-    console.log('coming here')
-    checkBackend()
 
     const handleWalletClick = (wallet) => {
-        const account = calculatePublicKey(wallet.privateKey)
+        // const account = calculatePublicKey(wallet.privateKey)
         activeWallet.changeCurrentActiveAccount(
             activeWallet.chain,
             wallet.wallet,
-            account,
+            wallet.account,
             wallet.privateKey
         )
+        console.log('active wallet is ', activeWallet.activeWallet)
         navigation.navigate('Wallet')
     }
 
@@ -105,18 +91,6 @@ const HomeScreen = ({ navigation }) => {
                         console.log('Import clicked')
                     }}
                 />
-                <Button
-                    title='API'
-                    onPress={async () => {
-                        console.log('API clicked')
-                        const response = await axios(
-                            'https://cryptoxpress-back.onrender.com/calculatePublicKey?privateKey=cVk7yGjwmhxWBJYMZwpTnKTLtSpz3dP66NwMf635WKzNpgmpXAyi'
-                        )
-                        console.log('api data fetched')
-                        console.log(response.data)
-                        // setText(response.data)
-                    }}
-                />
             </View>
             {currentChain.chain === 'Bitcoin' && (
                 <View style={styles.horizontalElement}>
@@ -144,7 +118,7 @@ const HomeScreen = ({ navigation }) => {
                         style={styles.walletItem}
                     >
                         <Text>{wallet.wallet}</Text>
-                        <Text>{wallet.account}</Text>
+                        <Text>{trimWalletAddress(wallet.account)}</Text>
                     </TouchableOpacity>
                 ))}
             </View>

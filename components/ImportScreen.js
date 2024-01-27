@@ -28,13 +28,9 @@ const ImportScreen = ({ navigation }) => {
 
     async function calculatePublicKey(privateKey) {
         if (currentChain.chain === 'Bitcoin') {
-            console.log('inside bitconi calculte private key')
-            const response = await axios(
-                `${SERVER_URL}/calculatePublicKey?privateKey=${privateKey}`
-            )
+            const response = await axios.get(`${SERVER_URL}/calculatePublicKey?privateKey=${privateKey}`)
             return response.data
         } else if (currentChain.chain === 'Polygon') {
-            console.log(Polygon.calculatePublicKey)
             return Polygon.calculatePublicKey(privateKey)
         } 
     }
@@ -42,7 +38,6 @@ const ImportScreen = ({ navigation }) => {
     const handleImport = async () => {
         console.log('Import button pressed')
         const account = await calculatePublicKey(privateKey)
-        console.log('public key calculated')
         if (!checkPrivateKey(privateKey)) {
           alert('Invalid private key');
           return;
@@ -82,18 +77,6 @@ const ImportScreen = ({ navigation }) => {
                     title='Cancel'
                     onPress={() => {
                         navigation.navigate('Home')
-                    }}
-                />
-                <Button
-                    title='API'
-                    onPress={async () => {
-                        console.log('API clicked')
-                        const response = await axios(
-                            'https://cryptoxpress-back.onrender.com/calculatePublicKey?privateKey=cVk7yGjwmhxWBJYMZwpTnKTLtSpz3dP66NwMf635WKzNpgmpXAyi'
-                        )
-                        console.log('api data fetched')
-                        console.log(response.data)
-                        // setText(response.data)
                     }}
                 />
             </View>
