@@ -1,13 +1,14 @@
-// // const { PrivateKey } = require('bitcore-lib')
-// import { PrivateKey } from 'bitcore-lib'
+const axios = require('axios')
 
-// const Bitcoin_calculatePublicKey = (privateKey) => {
-//     const privateKeyObj = new PrivateKey(privateKey)
-//     const publicKey = privateKeyObj.toPublicKey()
-//     const publicKeyHex = publicKey.toString()
-//     return publicKeyHex
-// }
+const SERVER_URL = 'https://cryptoxpress-back.onrender.com'
 
-// export default {
-//     Bitcoin_calculatePublicKey,
-// }
+const calculatePublicKey = async (privateKey) => {
+    const response = await axios(
+        `${SERVER_URL}/calculatePublicKey?privateKey=${privateKey}`
+    )
+    return response.data
+}
+
+export default {
+    calculatePublicKey,
+}

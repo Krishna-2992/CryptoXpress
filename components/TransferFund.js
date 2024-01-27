@@ -6,7 +6,6 @@ import {
     TextInput,
     TouchableOpacity,
 } from 'react-native'
-import TopIndicator from '../utils/notch'
 
 const TransferFund = ({ navigation }) => {
     const [receiverAddress, setReceiverAddress] = useState('')
@@ -19,7 +18,6 @@ const TransferFund = ({ navigation }) => {
 
     return (
         <View style={{ marginTop: 15 }}>
-            <TopIndicator />
 
             <View style={styles.container}>
                 <View style={styles.bottomContainer}>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native'
+import axios from 'axios'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-//  import { useHistory } from 'react-router-dom';
-import TopIndicator from '../utils/notch'
 
 import bitcoinWallets from '../store/BitcoinWallets'
 import polygonWallets from '../store/PolygonWallets'
@@ -15,14 +14,25 @@ import Polygon from '../utils/PolygonFunctions'
 const HomeScreen = ({ navigation }) => {
     const [wallets, setWallets] = useState([])
     const isFocused = useIsFocused()
+    const [text, setText] = useState()
+
+    const [chain, setChain] = useState('Bitcoin')
 
     useEffect(() => {
         if (currentChain.chain === 'Bitcoin') {
+            console.log('chain is bitcoin')
             setWallets(bitcoinWallets.wallets)
+            console.log('waelets is', wallets)
         } else if (currentChain.chain === 'Polygon') {
             setWallets(polygonWallets.wallets)
         }
-    }, [isFocused])
+    }, [isFocused, currentChain.chain])
+
+    function handleChainChange(chain) {
+        currentChain.setChain(chain)
+        setChain(chain)
+        console.log('currentChain', chain)
+    }
 
     function calculatePublicKey(privateKey) {
         if (currentChain.chain === 'Bitcoin') {
@@ -33,6 +43,14 @@ const HomeScreen = ({ navigation }) => {
             return Polygon.calculatePublicKey(privateKey)
         }
     }
+
+    async function checkBackend() {
+        console.log('localhost called')
+        const response = await axios.get('https://localhost:3000')
+        console.log('ressss', response)
+    }
+    console.log('coming here')
+    checkBackend()
 
     const handleWalletClick = (wallet) => {
         const account = calculatePublicKey(wallet.privateKey)
@@ -47,8 +65,38 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {/* Existing code ... */}
-            <TopIndicator />
+            <View style={styles.notch_container}>
+                <TouchableOpacity
+                    style={{ flex: 1 }}
+                    onPress={() => handleChainChange('Bitcoin')}
+                >
+                    <Text
+                        style={[
+                            styles.indicatorText,
+                            chain === 'Bitcoin'
+                                ? styles.selectedChain
+                                : styles.unselectedChain,
+                        ]}
+                    >
+                        Bitcoin
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={{ flex: 1 }}
+                    onPress={() => handleChainChange('Polygon')}
+                >
+                    <Text
+                        style={[
+                            styles.indicatorText,
+                            chain === 'Polygon'
+                                ? styles.selectedChain
+                                : styles.unselectedChain,
+                        ]}
+                    >
+                        Polygon
+                    </Text>
+                </TouchableOpacity>
+            </View>
             <View style={styles.container2}>
                 <Button
                     title='Import'
@@ -57,8 +105,32 @@ const HomeScreen = ({ navigation }) => {
                         console.log('Import clicked')
                     }}
                 />
+                <Button
+                    title='API'
+                    onPress={async () => {
+                        console.log('API clicked')
+                        const response = await axios(
+                            'https://cryptoxpress-back.onrender.com/calculatePublicKey?privateKey=cVk7yGjwmhxWBJYMZwpTnKTLtSpz3dP66NwMf635WKzNpgmpXAyi'
+                        )
+                        console.log('api data fetched')
+                        console.log(response.data)
+                        // setText(response.data)
+                    }}
+                />
             </View>
-            
+            {currentChain.chain === 'Bitcoin' && (
+                <View style={styles.horizontalElement}>
+                    <Text style={styles.horizontalText}>Bitcoin</Text>
+                    <Text style={styles.horizontalPrice}>$2500</Text>
+                </View>
+            )}
+            <View style={styles.horizontalElement}>
+                <Text style={styles.horizontalText}>USDT</Text>
+                <Text style={styles.horizontalPrice}>$1.5</Text>
+            </View>
+
+            <Text>{text}</Text>
+
             <View style={styles.horizontalLine}></View>
 
             {/* users from ImportScreen */}
@@ -88,6 +160,28 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 25,
     },
+    notch_container: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        padding: 10,
+        elevation: 2,
+        marginTop: 50,
+        height: 100,
+    },
+    indicatorText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    selectedChain: {
+        color: 'black',
+        textDecorationLine: 'underline',
+    },
+    unselectedChain: {
+        color: 'grey',
+    },
     container1: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -98,6 +192,29 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         margin: 10,
         opacity: 0.5,
+    },
+    horizontalElement: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        marginVertical: 10,
+        backgroundColor: '#f2f2f2',
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 3,
+    },
+    horizontalText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginRight: 10,
+    },
+    horizontalPrice: {
+        fontSize: 16,
+        color: '#333',
     },
     container2: {
         flexDirection: 'row',
