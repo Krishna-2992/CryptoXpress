@@ -15,6 +15,8 @@ const HomeScreen = ({ navigation }) => {
     const [wallets, setWallets] = useState([])
     const isFocused = useIsFocused()
     const [text, setText] = useState()
+    const [bitcoinPrice, setBitcoinPrice] = useState()
+    const [usdtprice, setusdtPrice] = useState()
 
     const [chain, setChain] = useState('Bitcoin')
 
@@ -24,6 +26,18 @@ const HomeScreen = ({ navigation }) => {
         } else if (currentChain.chain === 'Polygon') {
             setWallets(polygonWallets.wallets)
         }
+        async function setAssetPrices() {
+            console.log('inside useState...')
+            const url =
+                'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,tether&vs_currencies=usd&markets=global,polygon-mainnet'
+            const apiKey = 'CG-BYgqb4WDQuAo2qFVhP3kq9HP'
+            const price = await axios.get(url)
+            console.log(price.data)
+            console.log('price.data.bitcoin.usd', price.data.bitcoin.usd)
+            setBitcoinPrice(price.data.bitcoin.usd)
+            setusdtPrice(price.data.tether.usd)
+        }
+        setAssetPrices()
     }, [isFocused, currentChain.chain])
 
     function handleChainChange(chain) {
@@ -40,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
     const handleWalletClick = (wallet) => {
         // const account = calculatePublicKey(wallet.privateKey)
         activeWallet.changeCurrentActiveAccount(
-            activeWallet.chain,
+            currentChain.chain,
             wallet.wallet,
             wallet.account,
             wallet.privateKey
@@ -95,12 +109,12 @@ const HomeScreen = ({ navigation }) => {
             {currentChain.chain === 'Bitcoin' && (
                 <View style={styles.horizontalElement}>
                     <Text style={styles.horizontalText}>Bitcoin</Text>
-                    <Text style={styles.horizontalPrice}>$2500</Text>
+                    <Text style={styles.horizontalPrice}>${bitcoinPrice?bitcoinPrice:0}</Text>
                 </View>
             )}
             <View style={styles.horizontalElement}>
                 <Text style={styles.horizontalText}>USDT</Text>
-                <Text style={styles.horizontalPrice}>$1.5</Text>
+                <Text style={styles.horizontalPrice}>${usdtprice || 0}</Text>
             </View>
 
             <Text>{text}</Text>

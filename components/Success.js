@@ -1,41 +1,47 @@
-import React from 'react';
-      import { StyleSheet, View, Text, Image, Button, Linking } from 'react-native';
+import React from 'react'
+import { StyleSheet, View, Text, Image, Button, Linking } from 'react-native'
 
-      const SuccessScreen = () => {
-        const handleRedirect = () => {
-          Linking.openURL('https://www.blockchain.com/explorer');
-        };
+const SuccessScreen = ({ route }) => {
 
-        return (
-          <View style={styles.container}>
+  const { transactionId } = route.params
+    const handleRedirect = () => {
+        Linking.openURL(`https://mumbai.polygonscan.com/tx/${transactionId}`)
+    }
+
+    console.log('inside success screen')
+
+    return (
+        <View style={styles.container}>
             <Image
-              style={styles.image}
-              source={require('../assets/success.png')}
+                style={styles.image}
+                source={require('../assets/success.png')}
             />
-            <Text style={styles.text}>Success!</Text>
-            <Text style={styles.txthash}>1ee4njfn3frnoj</Text>
-            <Button title="Go to Blockchain Explorer" onPress={handleRedirect}/>
-    </View>
-  );
-};
+            <Text style={styles.text}>Transaction sent successfully!</Text>
+            <Text style={styles.txthash}>{transactionId}</Text>
+            <Button
+                title='Go to Blockchain Explorer'
+                onPress={handleRedirect}
+            />
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'green',
-  },
- 
-});
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    image: {
+        width: 200,
+        height: 200,
+        marginBottom: 20,
+    },
+    text: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'green',
+    },
+})
 
-export default SuccessScreen;
+export default SuccessScreen

@@ -1,4 +1,12 @@
-import { Button, StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native'
+import {
+    Button,
+    StyleSheet,
+    Text,
+    View,
+    FlatList,
+    Image,
+    TouchableOpacity,
+} from 'react-native'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -13,7 +21,7 @@ const Wallet = ({ navigation }) => {
 
     useEffect(() => {
         console.log('inside useEffect')
-        const fetchTransactions = async () => {
+        const fetchBitcoinTransactions = async () => {
             try {
                 console.log('inside fetchTransactions')
                 const response = await axios.get(
@@ -31,12 +39,55 @@ const Wallet = ({ navigation }) => {
                 console.error('Error fetching transactions:', error)
             }
         }
+        const fetchPolygonTransactions = async () => {
 
-        fetchTransactions()
+            console.log('activewallet is 🐶🐶🐶🐶🐶🐶🐶🐶🐶', activeWallet.activeWallet.account)
+            let data = JSON.stringify({
+                jsonrpc: '2.0',
+                id: 0,
+                method: 'alchemy_getAssetTransfers',
+                params: [
+                    {
+                        fromBlock: '0x0',
+                        fromAddress: activeWallet.activeWallet.account,
+                        category: ['external'],
+                    },
+                ],
+            })
+
+            var requestOptions = {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                data: data,
+            }
+
+            const apiKey = '2sNa9TgLKPsPhrveTuT7JRb9GgZTbboc'
+            const baseURL = `https://polygon-mumbai.g.alchemy.com/v2/${apiKey}`
+            const axiosURL = `${baseURL}`
+
+            axios(axiosURL, requestOptions)
+                .then((response) => {
+
+                    console.log(response.data.result.transfers.reverse())
+                    setTransactions(response.data.result.transfers.reverse())
+                })
+                .catch((error) => console.log(error))
+        }
+
+        if (currentChain.chain === 'Bitcoin') {
+            fetchBitcoinTransactions()
+        } else if (currentChain.chain === 'Polygon') {
+            fetchPolygonTransactions()
+        }
     }, [])
 
     function handleTransactionPress(transaction) {
-        navigation.navigate('TransactionDetails', { transaction })
+        if(currentChain.chain === "Bitcoin") {
+            navigation.navigate('BitcoinTransactionDetails', { transaction })
+        } 
+        else if(currentChain.chain === "Polygon") {
+            navigation.navigate('PolygonTransactionDetails', { transaction })
+        }
     }
 
     function trimWalletAddress() {
@@ -79,18 +130,46 @@ const Wallet = ({ navigation }) => {
                             style={styles.transactionItem}
                             onPress={() => handleTransactionPress(item)}
                         >
-                            <Text style={styles.transactionLabel}>Time:</Text>
-                            <Text style={styles.transactionValue}>
-                                {new Date(
-                                    item?.timestamp * 1000
-                                ).toLocaleString()}
-                            </Text>
-                            <Text style={styles.transactionLabel}>
-                                Transaction ID:
-                            </Text>
-                            <Text style={styles.transactionValue}>
-                                {item?.transactionId}
-                            </Text>
+                            {currentChain.chain === 'Bitcoin' ? (
+                                <View>
+                                    <Text style={styles.transactionLabel}>
+                                        Time:
+                                    </Text>
+                                    <Text style={styles.transactionValue}>
+                                        {new Date(
+                                            item?.timestamp * 1000
+                                        ).toLocaleString()}
+                                    </Text>
+                                </View>
+                            ) : currentChain.chain === 'Polygon' ? (
+                                <View>
+                                    <Text style={styles.transactionLabel}>
+                                        BlockNumber:
+                                    </Text>
+                                    <Text style={styles.transactionValue}>
+                                        {item?.blockNum}
+                                    </Text>
+                                </View>
+                            ) : null}
+                            {currentChain.chain === 'Bitcoin' ? (
+                                <View>
+                                    <Text style={styles.transactionLabel}>
+                                        Transaction ID:
+                                    </Text>
+                                    <Text style={styles.transactionValue}>
+                                        {item.transactionId}
+                                    </Text>
+                                </View>
+                            ) : currentChain.chain === 'Polygon' ? (
+                                <View>
+                                    <Text style={styles.transactionLabel}>
+                                        Transaction Hash:
+                                    </Text>
+                                    <Text style={styles.transactionValue}>
+                                        {item.hash}
+                                    </Text>
+                                </View>
+                            ) : null}
                         </TouchableOpacity>
                     )}
                     keyExtractor={(item) => item.transactionId}

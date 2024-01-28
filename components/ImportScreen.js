@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TextInput, Text, Button, StyleSheet } from 'react-native'
+import { View, TextInput, Text, Button, StyleSheet, ActivityIndicator } from 'react-native'
 import axios from 'axios'
 
 import bitcoinWallets from '../store/BitcoinWallets'
@@ -16,8 +16,10 @@ const SERVER_URL = 'https://cryptoxpress-back.onrender.com'
 const ImportScreen = ({ navigation }) => {
     const [walletName, setWalletName] = useState('')
     const [privateKey, setPrivateKey] = useState('')
+    const [loading, setLoading] = useState(false)
 
     function checkPrivateKey(privateKey) {
+        console.log(currentChain.chain, privateKey.length)
         if (currentChain.chain === "Bitcoin" && privateKey.length === 52) {
             return true
         } else if(currentChain.chain === "Polygon" && privateKey.length === 64) {
@@ -37,13 +39,13 @@ const ImportScreen = ({ navigation }) => {
 
     const handleImport = async () => {
         console.log('Import button pressed')
-        const account = await calculatePublicKey(privateKey)
         if (!checkPrivateKey(privateKey)) {
-          alert('Invalid private key');
+          alert(`Invalid private key for ${currentChain.chain} network`);
           return;
         }
+        setLoading(true)
+        const account = await calculatePublicKey(privateKey)
         if(currentChain.chain === 'Bitcoin') {
-            
             bitcoinWallets.addBitcoinWallet(walletName, privateKey, account)
         } else if(currentChain.chain === 'Polygon') {
             polygonWallets.addPolygonWallet(walletName, privateKey, account)
@@ -80,6 +82,7 @@ const ImportScreen = ({ navigation }) => {
                     }}
                 />
             </View>
+            { loading && <ActivityIndicator size="large" color="#0000ff" /> }
         </View>
     )
 }
