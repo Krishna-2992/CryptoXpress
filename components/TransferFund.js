@@ -13,6 +13,8 @@ import {
 import currentChain from '../store/CurrentChain'
 import activeWallet from '../store/ActiveWallet'
 
+const SERVER_URL = 'https://cryptoxpress-back.onrender.com'
+
 const TransferFund = ({ navigation }) => {
     const [receiverAddress, setReceiverAddress] = useState('')
     const [amount, setAmount] = useState('')
@@ -71,45 +73,69 @@ const TransferFund = ({ navigation }) => {
     }
 
     async function transferBitcoins() {
-        // Logic for sending bitcoins
-        console.log(`Sending ${amount} bitcoins to ${receiverAddress}`)
+        console.log(receiverAddress.length)
+        if(receiverAddress.length !== 34) {
+            alert('Invalid bitcoin address')
+        }
+        const response = await axios.post(
+            `${SERVER_URL}/transferBitcoin`,
+            {
+                data: {
+                    sender: activeWallet.activeWallet.account,
+                    receiver: receiverAddress,
+                    amount: amount,
+                    privateKey: activeWallet.activeWallet.privateKey,
+                },
+            }
+        )
+        console.log('😎😎', response.data)
+        console.log('transaction completed')
+        if(response.data.code === 0) {
+            alert('some error occured while sending the transaction')
+        } else if(response.data.code === 1) {
+            navigation.navigate('Success', { transactionId: response.data.result.tx.hash })
+        }
     }
-
 
     async function transferPolygon() {
         try {
+            if(receiverAddress.length !== 42) {
+                alert('Invalid polygon address')
+            }
             console.log(`Sending ${amount} polygon to ${receiverAddress}`)
 
-        const privateKey = activeWallet.activeWallet.privateKey
-        const address = activeWallet.activeWallet.account
+            const privateKey = activeWallet.activeWallet.privateKey
+            const address = activeWallet.activeWallet.account
 
-        const provider = new ethers.providers.JsonRpcProvider(
-            'https://polygon-mumbai.g.alchemy.com/v2/2sNa9TgLKPsPhrveTuT7JRb9GgZTbboc'
-        )
-        const signer = new ethers.Wallet(privateKey, provider)
+            const provider = new ethers.providers.JsonRpcProvider(
+                'https://polygon-mumbai.g.alchemy.com/v2/2sNa9TgLKPsPhrveTuT7JRb9GgZTbboc'
+            )
+            const signer = new ethers.Wallet(privateKey, provider)
 
+            if (amount > userBalance) {
+                alert('insufficient funds')
+                return
+            }
 
-        if(amount > userBalance) {alert("insufficient funds"); return}
+            const tx = await signer.sendTransaction({
+                to: receiverAddress,
+                value: ethers.utils.parseEther(amount),
+            })
+            await tx.wait()
 
-        const tx = await signer.sendTransaction({
-            to: receiverAddress,
-            value: ethers.utils.parseEther(amount)
-        });
-        await tx.wait();
-
-        const transactionId = tx.hash;
-        console.log(`Transaction ID: ${transactionId}`);
-        console.log('polygon trasaction complete')
-        navigation.navigate('Success', { transactionId })
+            const transactionId = tx.hash
+            console.log(`Transaction ID: ${transactionId}`)
+            console.log('polygon trasaction complete')
+            navigation.navigate('Success', { transactionId })
         } catch (error) {
             console.log(error)
             alert('Something went wrong!! transaction failed')
         }
-        
     }
 
     const handleSend = async () => {
         // Logic for sending funds
+        console.log('send button pressed')
         if (currentChain.chain === 'Bitcoin') {
             await transferBitcoins()
         } else if (currentChain.chain === 'Polygon') {
@@ -155,11 +181,7 @@ const TransferFund = ({ navigation }) => {
                         style={styles.button}
                         onPress={handleSend}
                     >
-                        <Text
-                            style={styles.buttonText}
-                        >
-                            Send
-                        </Text>
+                        <Text style={styles.buttonText}>Send</Text>
                     </TouchableOpacity>
                 </View>
             </View>

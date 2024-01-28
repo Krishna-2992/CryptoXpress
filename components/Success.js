@@ -1,11 +1,22 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image, Button, Linking } from 'react-native'
 
-const SuccessScreen = ({ route }) => {
+import currentChain from '../store/CurrentChain'
 
-  const { transactionId } = route.params
+const SuccessScreen = ({ route }) => {
+    const { transactionId } = route.params
     const handleRedirect = () => {
-        Linking.openURL(`https://mumbai.polygonscan.com/tx/${transactionId}`)
+      console.log('transaction Id:', transactionId)
+        if (currentChain.chain === 'Bitcoin') {
+            Linking.openURL(
+                `https://live.blockcypher.com/btc-testnet/tx/${transactionId}`
+            )
+        }
+        if (currentChain.chain == 'Polygon') {
+            Linking.openURL(
+                `https://mumbai.polygonscan.com/tx/${transactionId}`
+            )
+        }
     }
 
     console.log('inside success screen')

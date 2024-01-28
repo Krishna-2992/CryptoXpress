@@ -63,7 +63,7 @@ const ImportScreen = ({ navigation }) => {
             <Text style={styles.heading}>Import Your {currentChain.chain} Wallet</Text>
             <TextInput
                 style={styles.input}
-                placeholder='Wallet'
+                placeholder='Wallet Name'
                 value={walletName}
                 onChangeText={setWalletName}
             />

@@ -108,12 +108,12 @@ const HomeScreen = ({ navigation }) => {
             </View>
             {currentChain.chain === 'Bitcoin' && (
                 <View style={styles.horizontalElement}>
-                    <Text style={styles.horizontalText}>Bitcoin</Text>
+                    <Text style={styles.horizontalText}>Bitcoin price:</Text>
                     <Text style={styles.horizontalPrice}>${bitcoinPrice?bitcoinPrice:0}</Text>
                 </View>
             )}
             <View style={styles.horizontalElement}>
-                <Text style={styles.horizontalText}>USDT</Text>
+                <Text style={styles.horizontalText}>USDT price:</Text>
                 <Text style={styles.horizontalPrice}>${usdtprice || 0}</Text>
             </View>
 
@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignContent: 'center',
         margin: 50,
+        width: '80%',
+        padding: 10,
     },
     horizontalLine: {
         width: '100%',
