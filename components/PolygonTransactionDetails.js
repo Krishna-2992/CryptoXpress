@@ -5,6 +5,7 @@ import {
     StyleSheet,
     Image,
     TouchableOpacity,
+    Button,
     Linking,
 } from 'react-native'
 
@@ -13,25 +14,22 @@ const PolygonTransactionDetails = ({ route }) => {
 
     console.log('polygon transaction page')
 
+    const handleRedirect = () => {
+        console.log('transaction is', transaction.hash)
+        if (currentChain.chain == 'Polygon') {
+            Linking.openURL(
+                `https://mumbai.polygonscan.com/tx/${transaction.hash}`
+            )
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Image
                 source={require('../assets/transaction.png')}
                 style={styles.profileImage}
             />
-            <TouchableOpacity
-                onPress={() =>
-                    Linking.openURL(
-                        `https://live.blockcypher.com/btc-testnet/tx/${transaction.transactionId}`
-                    )
-                }
-            >
-                <Text style={styles.label}>View in Block Explorer:</Text>
-                {/* <Text style={styles.value}>
-                    https://live.blockcypher.com/btc-testnet/tx/
-                    {transaction.transactionId}
-                </Text> */}
-            </TouchableOpacity>
+            <Button title='view on block explorer' onPress={handleRedirect} />
             <View style={styles.detailItem}>
                 <Text style={styles.label}>Transaction Hash:</Text>
                 <Text style={styles.value}>{transaction.hash}</Text>

@@ -1,10 +1,26 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Button,
+    Linking,
+} from 'react-native'
 
 const BitcoinTransactionDetails = ({ route }) => {
     const { transaction } = route.params
 
     console.log('transaction', transaction)
+
+    const handleRedirect = () => {
+        console.log('transaction is', transaction)
+        if (currentChain.chain === 'Bitcoin') {
+            Linking.openURL(
+                `https://live.blockcypher.com/btc-testnet/tx/${transaction.transactionId}`
+            )
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -12,19 +28,7 @@ const BitcoinTransactionDetails = ({ route }) => {
                 source={require('../assets/transaction.png')}
                 style={styles.profileImage}
             />
-            <TouchableOpacity
-                onPress={() =>
-                    Linking.openURL(
-                        `https://live.blockcypher.com/btc-testnet/tx/${transaction.transactionId}`
-                    )
-                }
-            >
-                <Text style={styles.label}>View in Block Explorer:</Text>
-                <Text style={styles.value}>
-                    https://live.blockcypher.com/btc-testnet/tx/
-                    {transaction.transactionId}
-                </Text>
-            </TouchableOpacity>
+            <Button title='view on block explorer' onPress={handleRedirect} />
             <View style={styles.detailItem}>
                 <Text style={styles.label}>Transaction Id:</Text>
                 <Text style={styles.value}>{transaction.transactionId}</Text>

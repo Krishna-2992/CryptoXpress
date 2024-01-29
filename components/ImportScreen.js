@@ -83,6 +83,7 @@ const ImportScreen = ({ navigation }) => {
                 />
             </View>
             { loading && <ActivityIndicator size="large" color="#0000ff" /> }
+            { loading && <Text>Hold on tight...importing your wallet</Text> }
         </View>
     )
 }
